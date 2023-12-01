@@ -7,8 +7,6 @@ object Day01 : Day("01", "142", "281") {
     override fun solvePartOne() = getSum(getInputList())
     override fun solvePartTwo() = getSum(getInputList().replaceWordsWithDigitsForList())
 
-
-
     private fun List<String>.replaceWordsWithDigitsForList() = this.map(::replaceWordsWithDigitsForLine)
 
     private fun replaceWordsWithDigitsForLine(line: String) : String {
