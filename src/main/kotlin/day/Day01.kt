@@ -11,7 +11,7 @@ object Day01 : Day("01", "142", "281") {
 
     private fun replaceWordsWithDigitsForLine(line: String) : String {
         var output = line
-        replaceMap.forEach { (oldValue, newValue) -> output = output.replace(oldValue, newValue)}
+        replaceMap .forEach { (oldValue, newValue) -> output = output.replace(oldValue, newValue)}
         return output
     }
 
@@ -23,28 +23,26 @@ object Day01 : Day("01", "142", "281") {
         return "$first$last".toInt()
     }
 
-    private fun getFirstDigit(line: String): String {
-        return line.first { it.isDigit() }.toString()
-    }
+    private fun getFirstDigit(line: String) = line.first { it.isDigit() }.toString()
 
-    val replaceMap = mapOf(
-        "one" to "one1one",
-        "two" to "two2two",
-        "three" to "three3three",
-        "four" to "four4four",
-        "five" to "five5five",
-        "six" to "six6six",
-        "seven" to "seven7seven",
-        "eight" to "eight8eight",
-        "nine" to "nine9nine",
+    private val replaceMap = mapOf(
+        "one" to "o1e",
+        "two" to "t2",
+        "three" to "t3e",
+        "four" to "4",
+        "five" to "5e",
+        "six" to "6",
+        "seven" to "7n",
+        "eight" to "e8",
+        "nine" to "n9e",
     )
 
-    const val exampleOne = "1abc2\n" +
+    private const val exampleOne = "1abc2\n" +
             "pqr3stu8vwx\n" +
             "a1b2c3d4e5f\n" +
             "treb7uchet"
 
-    const val exampleTwo = "two1nine\n" +
+    private const val exampleTwo = "two1nine\n" +
             "eightwothree\n" +
             "abcone2threexyz\n" +
             "xtwone3four\n" +
