@@ -4,14 +4,14 @@ import kotlin.math.max
 
 
 object Day02 : Day("02", "8", "2286") {
+    private const val BLUE_MAX = 14
+    private const val GREEN_MAX = 13
+    private const val RED_MAX = 12
+
     override fun examplePartOne() = getExampleList().readCubesByMax().toString()
     override fun examplePartTwo() = getExampleList().readCubesByPower().toString()
     override fun solvePartOne() = getInputList().readCubesByMax().toString()
     override fun solvePartTwo() = getInputList().readCubesByPower().toString()
-
-    private const val BLUE_MAX = 14
-    private const val GREEN_MAX = 13
-    private const val RED_MAX = 12
 
     private fun List<String>.readCubesByMax() = map(::readLine).sumByMax()
     private fun List<String>.readCubesByPower() = map(::readLine).sumOf { it.power() }
@@ -21,7 +21,7 @@ object Day02 : Day("02", "8", "2286") {
             blue = game.getAmountOf("blue"),
             green = game.getAmountOf("green"),
             red = game.getAmountOf("red"),
-            )
+        )
     }
 
     private fun List<CubeSet>.sumByMax() = mapIndexed { index, cubeSet -> valueByBorder(cubeSet, index) }.sum()
@@ -31,8 +31,7 @@ object Day02 : Day("02", "8", "2286") {
     private fun String.getAmountOf(color: String) =
         split(",").find { cubes -> cubes.contains(color) }?.clearAmount() ?: 0
 
-    private fun String.clearAmount() =
-        replace("""Game\s\d+""".toRegex(), "").replace("""(\D|\s)+""".toRegex(), "").toInt()
+    private fun String.clearAmount() = replace("""(Game\s\d+)|(\D|\s)+""".toRegex(), "").toInt()
 
     data class CubeSet(
         val blue: Int = 0,
