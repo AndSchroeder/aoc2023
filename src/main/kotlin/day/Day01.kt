@@ -27,13 +27,13 @@ object Day01 : Day("01", "142", "281") {
 
     private val replaceMap = mapOf(
         "one" to "o1e",
-        "two" to "t2",
+        "two" to "t2o",
         "three" to "t3e",
-        "four" to "4",
-        "five" to "5e",
-        "six" to "6",
+        "four" to "f4r",
+        "five" to "f5e",
+        "six" to "s6x",
         "seven" to "7n",
-        "eight" to "e8",
+        "eight" to "e8t",
         "nine" to "n9e",
     )
 
