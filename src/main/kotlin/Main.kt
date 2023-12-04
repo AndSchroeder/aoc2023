@@ -5,7 +5,7 @@ fun main() {
     val days = listOf<Day>(
 
     )
-    listOf<Day>(Day02).forEach(::solveDay)
+    listOf<Day>(Day03).forEach(::solveDay)
 }
 
 private fun solveDay(day: Day) {
@@ -27,7 +27,7 @@ private fun solveDay(day: Day) {
         """Example:  ${
             day.examplePartTwo().apply {
                 check(this == day.examplePartTwoSolution) { 
-                    "example part one should be ${day.examplePartTwoSolution} but is $this" 
+                    "example part two should be ${day.examplePartTwoSolution} but is $this" 
                 }
             }
         }"""
