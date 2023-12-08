@@ -26,7 +26,6 @@ object Day08 : Day("08", "2", "6") {
                 { it.last().split("""\s""".toRegex()).run { DesertCrossing(first(), last()) } }
             )
 
-
     data class DesertGraph(
         val instructions: List<String>,
         val subPaths: Map<String, DesertCrossing>
@@ -34,8 +33,7 @@ object Day08 : Day("08", "2", "6") {
         fun solve(
             start: String = "AAA",
             endCondition: (position: String) -> Boolean = { position -> position == "ZZZ" }
-        ): Long =
-            findPath(start).indexOfFirst { endCondition(it) }.toLong()
+        ): Long = findPath(start).indexOfFirst { endCondition(it) }.toLong()
 
         fun solveAll(): Long {
             val solutions = subPaths.keys.filter { it.endsWith("A") }
@@ -44,7 +42,7 @@ object Day08 : Day("08", "2", "6") {
         }
 
         private fun findPath(start: String) = instructions.asSequence().repeat()
-            .scan(start) { acc: String, instruction: String -> subPaths[acc]!!.chooseByInstruction(instruction) }
+            .scan(start) { acc: String, instruction: String -> subPaths.getValue(acc).chooseByInstruction(instruction) }
     }
 
     data class DesertCrossing(
