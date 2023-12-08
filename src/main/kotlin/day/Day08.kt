@@ -21,10 +21,11 @@ object Day08 : Day("08", "2", "6") {
     private fun parseSubPaths(subPathsString: String) =
         subPathsString
             .split("\n").map { it.replace("""[(,)]""".toRegex(), "").split("""\s=\s""".toRegex()) }
-            .associateBy(
-                { it.first() },
-                { it.last().split("""\s""".toRegex()).run { DesertCrossing(first(), last()) } }
-            )
+            .associateBy({ it.first() }, { parseCrossing(it) })
+
+    private fun parseCrossing(crossingStrings: List<String>) =
+        crossingStrings.last().split("""\s""".toRegex()).run { DesertCrossing(first(), last()) }
+
 
     data class DesertGraph(
         val instructions: List<String>,
@@ -33,16 +34,21 @@ object Day08 : Day("08", "2", "6") {
         fun solve(
             start: String = "AAA",
             endCondition: (position: String) -> Boolean = { position -> position == "ZZZ" }
-        ): Long = findPath(start).indexOfFirst { endCondition(it) }.toLong()
+        ): Long = findPathSequence(start).indexOfFirst { endCondition(it) }.toLong()
 
         fun solveAll(): Long {
-            val solutions = subPaths.keys.filter { it.endsWith("A") }
-                .map { start -> solve(start) { position -> position.endsWith("Z") } }
+            val startPaths = subPaths.keys.filter { it.endsWith("A") }
+            val solutions = startPaths.map { start -> solve(start) { position -> position.endsWith("Z") } }
             return solutions.lcm()
         }
 
-        private fun findPath(start: String) = instructions.asSequence().repeat()
-            .scan(start) { acc: String, instruction: String -> subPaths.getValue(acc).chooseByInstruction(instruction) }
+        private fun findPathSequence(start: String) =
+            instructions
+                .asSequence()
+                .repeat()
+                .scan(start) { acc: String, instruction: String ->
+                    subPaths.getValue(acc).chooseByInstruction(instruction)
+                }
     }
 
     data class DesertCrossing(
