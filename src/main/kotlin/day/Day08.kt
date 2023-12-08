@@ -34,11 +34,15 @@ object Day08 : Day("08", "2", "6") {
         fun solve(
             start: String = "AAA",
             endCondition: (position: String) -> Boolean = { position -> position == "ZZZ" }
-        ): Long = findPathSequence(start).indexOfFirst { endCondition(it) }.toLong()
+        ): Long = findPathSequence(start).withIndex()
+            .indexOfFirst {
+                endCondition(it.value) && it.index % instructions.size == 0 // needed for lcm
+            }.toLong()
 
         fun solveAll(): Long {
             val startPaths = subPaths.keys.filter { it.endsWith("A") }
             val solutions = startPaths.map { start -> solve(start) { position -> position.endsWith("Z") } }
+            require(solutions.all { it % instructions.size == 0L || instructions.size % it == 0L })
             return solutions.lcm()
         }
 
