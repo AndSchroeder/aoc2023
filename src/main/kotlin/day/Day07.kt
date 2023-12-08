@@ -39,9 +39,9 @@ object Day07 : Day("07", "6440", "5905") {
 
         companion object {
             fun determineType(useJokers: Boolean, cards: List<CamelCard>): CamelCardHandType {
-                val jokers = if (useJokers) cards.filter { it.type == CamelCardType.Joker }.size else 0
+                val jokers = if (useJokers) cards.filter { it.type == CamelCardType.JOKER }.size else 0
                 var sorted =
-                    cards.filter { it.type != CamelCardType.Joker }
+                    cards.filter { it.type != CamelCardType.JOKER }
                         .groupingBy { it }
                         .eachCount()
                         .map { (_, value) -> value }
@@ -82,19 +82,19 @@ object Day07 : Day("07", "6440", "5905") {
 
     enum class CamelCardType(val shortName: String, val rank: Int) {
         ACE("A", 14),
-        King("K", 13),
-        Queen("Q", 12),
-        Jack("J", 11),
-        Ten("T", 10),
-        Nine("9", 9),
-        Eight("8", 8),
-        Seven("7", 7),
-        Six("6", 6),
-        Five("5", 5),
-        Four("4", 4),
-        Three("3", 3),
-        Two("2", 2),
-        Joker("J", 1);
+        KING("K", 13),
+        QUEEN("Q", 12),
+        JACK("J", 11),
+        TEN("T", 10),
+        NINE("9", 9),
+        EIGHT("8", 8),
+        SEVEN("7", 7),
+        SIX("6", 6),
+        FIVE("5", 5),
+        FOUR("4", 4),
+        THREE("3", 3),
+        TWO("2", 2),
+        JOKER("J", 1);
 
         companion object {
             fun from(shortName: String, useJokers: Boolean) =
@@ -112,5 +112,4 @@ object Day07 : Day("07", "6440", "5905") {
         ONE_PAIR(1),
         HIGH_CARD(0),
     }
-
 }
