@@ -6,7 +6,7 @@ fun main() {
     val days = listOf<Day>(
 
     )
-    listOf<Day>(Day08).forEach(::solveDay)
+    listOf<Day>(Day09).forEach(::solveDay)
 }
 
 private fun solveDay(day: Day) {
