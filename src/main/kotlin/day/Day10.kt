@@ -1,17 +1,20 @@
 package day
 
 import day.Day10.PipeFieldType.*
-import day.Day10.parsePipeMaze
 import kotlin.math.min
 
 
-object Day10 : Day("10", "22", "") {
+object Day10 : Day("10", "22", "4") {
     override fun examplePartOne() = getExampleList().solveOne()
-    override fun examplePartTwo() = "getExampleList()"
+    override fun examplePartTwo() = getExampleList().solveTwo()
     override fun solvePartOne() = getInputList().solveOne()
-    override fun solvePartTwo() = "getInputList()"
+    override fun solvePartTwo() = getInputList().solveTwo()
 
     private fun List<String>.solveOne() = parsePipeMaze().apply { traverse() }.maxValue().toString()
+    private fun List<String>.solveTwo(): String {
+        val maze = parsePipeMaze().apply { traverse() }
+        return maze.countInside().toString()
+    }
 
     private fun List<String>.parsePipeMaze() = PipeMaze(mapIndexed { y, line ->
         line.toList().mapIndexed { x, field ->
@@ -25,6 +28,14 @@ object Day10 : Day("10", "22", "") {
         val grid: List<List<PipeField>>,
     ) {
 
+        fun countInside(): Int {
+            grid.flatten().filter { !it.visited }.forEach { field -> field.type = GROUND }
+            val grounds = grid.flatten().filter { it.type == GROUND }
+
+            grounds.forEach { field -> field.checkEnclosing(maze = this) }
+            return grid.flatten().count { it.type == INSIDE }
+        }
+
         fun maxValue() = grid.flatten().filter { it.value != Int.MAX_VALUE }.maxBy { it.value }.value
 
         tailrec fun traverse(stack: MutableList<PipeField> = mutableListOf(start)) {
@@ -36,19 +47,20 @@ object Day10 : Day("10", "22", "") {
             traverse(stack)
         }
 
-        val start get() = grid.flatten().first { field -> field.type == START }.apply { value = 0 }
-        val minX = 0
-        val minY = 0
-        val maxX = grid.first().size - 1
-        val maxY = grid.size - 1
+        fun find(x: Int, y: Int) = if ((minX..maxX).contains(x) && (minY..maxY).contains(y)) grid[y][x] else null
 
-        fun find(x: Int, y: Int) = if (x < minX || x > maxX || y < minY || y > maxY) null else grid[y][x]
+        private val start get() = grid.flatten().first { field -> field.type == START }.apply { value = 0 }
+        private val minX = 0
+        private val minY = 0
+        private val maxX = grid.first().size - 1
+        private val maxY = grid.size - 1
 
-        override fun toString() = grid.joinToString("\n") { it.joinToString("") { it.value.toString() + " " } }
+        override fun toString() =
+            grid.joinToString("\n") { line -> line.joinToString("") { field -> field.toString() } }
     }
 
     data class PipeField(
-        val type: PipeFieldType,
+        var type: PipeFieldType,
         val x: Int,
         val y: Int,
         var value: Int = Int.MAX_VALUE,
@@ -58,10 +70,20 @@ object Day10 : Day("10", "22", "") {
         fun neighbors(maze: PipeMaze) = when (type) {
             START -> getStartNeighbors(maze)
             GROUND -> listOf()
-            else -> listOf(
+            else -> listOfNotNull(
                 maze.find(x + type.prevX, y + type.prevY),
                 maze.find(x + type.nextX, y + type.nextY),
-            ).filterNotNull().filter { !it.visited }
+            ).filter { !it.visited }
+        }
+
+        fun checkEnclosing(maze: PipeMaze) {
+            val minToBorder = min(y, x) // count intersection for ray to upper left border
+            val rayIntersections = (1..minToBorder).count { diff ->
+                val type = maze.find(x - diff, y - diff)!!.type
+                PipeFieldType.edgeTypes().contains(type)
+            }
+
+            type = if (rayIntersections % 2 == 0) OUTSIDE else INSIDE
         }
 
         private fun getStartNeighbors(maze: PipeMaze): List<PipeField> {
@@ -88,12 +110,16 @@ object Day10 : Day("10", "22", "") {
         SOUTH_TO_WEST('7', -1, 0, 0, 1),
         SOUTH_TO_EAST('F', 1, 0, 0, 1),
         GROUND('.', 0, 0, 0, 0),
-        START('S', 0, 0, 0, 0);
+        START('S', 0, 0, 0, 0),
+        INSIDE('I', 0, 0, 0, 0),
+        OUTSIDE('O', 0, 0, 0, 0);
 
         override fun toString() = char.toString()
 
         companion object {
             fun from(char: Char) = entries.first { it.char == char }
+
+            fun edgeTypes() = listOf(NORTH_TO_WEST, SOUTH_TO_EAST, START, VERTICAL, HORIZONTAL)
         }
     }
 }
