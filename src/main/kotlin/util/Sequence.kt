@@ -7,3 +7,5 @@ fun <T> Sequence<T>.repeat(): Sequence<T> {
         }
     }
 }
+
+fun <T> Sequence<T>.intersection(other: Sequence<T>) = filter { firstValue -> other.contains(firstValue) }
