@@ -8,7 +8,7 @@ fun String.toLongList() = split("""\s""".toRegex()).map(String::toLong)
 
 fun <T>List<T>.combinations() = this.mapIndexed { y, yValue ->
     this.mapIndexed { x, xValue ->
-        if (x < y) return@mapIndexed null
+        if (x <= y) return@mapIndexed null
         xValue to yValue
     }.filterNotNull()
 }.flatten()
