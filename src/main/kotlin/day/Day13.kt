@@ -3,7 +3,6 @@ package day
 import util.FileReader.getExampleSplitByEmptyLine
 import util.FileReader.getInputSplitByEmptyLine
 import kotlin.math.min
-import kotlin.Int as Int1
 
 
 object Day13 : Day("13", "405", "400") {
@@ -26,10 +25,10 @@ object Day13 : Day("13", "405", "400") {
 
     data class MirrorGrid(
         val fields: List<MirrorField>,
-        var xMirror: Int1 = 0,
-        var yMirror: Int1 = 0,
-        var xMirrorFixed: Int1 = 0,
-        var yMirrorFixed: Int1 = 0
+        var xMirror: Int = 0,
+        var yMirror: Int = 0,
+        var xMirrorFixed: Int = 0,
+        var yMirrorFixed: Int = 0
     ) {
 
         private val maxX = fields.maxOf { it.x }
@@ -50,9 +49,9 @@ object Day13 : Day("13", "405", "400") {
 
         private fun setMirror(
             useXAxis: Boolean,
-            max: Int1,
+            max: Int,
             similarityCheck: Boolean,
-            getAxisData: (Int1) -> List<MirrorField>
+            getAxisData: (Int) -> List<MirrorField>
         ) {
             val visited = mutableListOf<List<MirrorField>>()
 
@@ -64,13 +63,11 @@ object Day13 : Day("13", "405", "400") {
                     val last = visited.reversed()
                     val size = min(next.size, last.size)
 
-                    val canHaveSimilarity = similarityCheck && next.subList(0, size).asTexts().almostTheSame(last.subList(0, size).asTexts())
                     val matchesMirror = if (similarityCheck) {
-                        canHaveSimilarity
+                        next.subList(0, size).asTexts().almostTheSame(last.subList(0, size).asTexts())
                     } else {
                         next.subList(0, size).asTexts() == last.subList(0, size).asTexts()
                     }
-
                     if (saveMirror(matchesMirror, similarityCheck, useXAxis, visited)) return@forEach
                 }
                 visited.add(data)
@@ -107,7 +104,9 @@ object Day13 : Day("13", "405", "400") {
         private fun String.compareSimilarity(other: String) = this.zip(other).count { (first, second) -> first != second }
     }
 
-    data class MirrorField(val x: Int1, val y: Int1, val type: MirrorFieldType) {
+    data class MirrorField(val x: Int, val y: Int, val type: MirrorFieldType): Comparable<MirrorField> {
+        override fun compareTo(other: MirrorField)=  type.char.compareTo(other.type.char)
+
         override fun toString() = type.char.toString()
     }
 
