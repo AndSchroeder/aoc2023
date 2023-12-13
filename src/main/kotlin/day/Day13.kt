@@ -56,7 +56,7 @@ object Day13 : Day("13", "405", "400") {
             val visited = mutableListOf<List<MirrorField>>()
 
             (0..max).forEach { i ->
-                val data = getAxisData(i)!!
+                val data = getAxisData(i)
 
                 if (visited.isNotEmpty()) {
                     val next = (i..max).map { j -> getAxisData(j) }
@@ -64,9 +64,9 @@ object Day13 : Day("13", "405", "400") {
                     val size = min(next.size, last.size)
 
                     val matchesMirror = if (similarityCheck) {
-                        next.subList(0, size).asTexts().almostTheSame(last.subList(0, size).asTexts())
+                        next.subList(0, size).almostTheSame(last.subList(0, size))
                     } else {
-                        next.subList(0, size).asTexts() == last.subList(0, size).asTexts()
+                        next.subList(0, size) == last.subList(0, size)
                     }
                     if (saveMirror(matchesMirror, similarityCheck, useXAxis, visited)) return@forEach
                 }
@@ -97,17 +97,26 @@ object Day13 : Day("13", "405", "400") {
             return false
         }
 
-        private fun List<List<MirrorField>>.asTexts() = this.joinToString("") { it.asText() }
-        private fun List<MirrorField>.asText() = this.map { it }.joinToString("")
-
-        private fun String.almostTheSame(other: String) = compareSimilarity(other) == 1
-        private fun String.compareSimilarity(other: String) = this.zip(other).count { (first, second) -> first != second }
+        private fun List<List<MirrorField>>.almostTheSame(other: List<List<MirrorField>>) = compareSimilarity(other) == 1
+        private fun List<List<MirrorField>>.compareSimilarity(other: List<List<MirrorField>>) = this.flatten().zip(other.flatten()).count { (first, second) -> first != second }
     }
 
-    data class MirrorField(val x: Int, val y: Int, val type: MirrorFieldType): Comparable<MirrorField> {
-        override fun compareTo(other: MirrorField)=  type.char.compareTo(other.type.char)
+    data class MirrorField(val x: Int, val y: Int, val type: MirrorFieldType) {
+        override fun equals(other: Any?): Boolean {
+            return if (other is MirrorField) {
+                this.type.equals(other.type)
+            } else {
+                super.equals(other)
+            }
+        }
 
         override fun toString() = type.char.toString()
+        override fun hashCode(): Int {
+            var result = x
+            result = 31 * result + y
+            result = 31 * result + type.hashCode()
+            return result
+        }
     }
 
     enum class MirrorFieldType(val char: Char) {
